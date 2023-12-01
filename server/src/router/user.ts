@@ -7,6 +7,7 @@ import auth from '../middlewares/auth'
 const router = express.Router()
 
 router.post('/', async (req, res) => {
+    console.log(req.body);
     const user = new User(req.body)
 
     try {

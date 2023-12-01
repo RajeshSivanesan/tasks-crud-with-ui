@@ -2,7 +2,7 @@ import express, { Express } from 'express';
 import helmet from 'helmet';
 import xss from 'xss-clean';
 import ExpressMongoSanitize from 'express-mongo-sanitize';
-// import compression from 'compression';
+import compression from 'compression';
 import cors from 'cors';
 import httpStatus from 'http-status';
 import config from './config/config';
@@ -26,18 +26,18 @@ app.use(helmet());
 app.use(cors());
 app.options('*', cors());
 
+// parse urlencoded request body
+app.use(express.urlencoded({ extended: false }));
+
 // parse json request body
 app.use(express.json());
-
-// parse urlencoded request body
-app.use(express.urlencoded({ extended: true }));
 
 // sanitize request data
 app.use(xss());
 app.use(ExpressMongoSanitize());
 
 // gzip compression
-// app.use(compression());
+app.use(compression());
 
 // // limit repeated failed requests to auth endpoints
 // if (config.env === 'production') {

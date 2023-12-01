@@ -19,6 +19,7 @@ router.post('/', auth, async (req, res) => {
 })
 
 // GET /tasks?completed=true
+// GET /tasks?priority=HIGH
 // GET /tasks?limit=10&skip=20
 // GET /tasks?sortBy=createdAt:desc
 router.get('/', auth, async (req, res) => {
@@ -32,6 +33,10 @@ router.get('/', auth, async (req, res) => {
             match.completed = req.query.completed === 'true'
         }
 
+        if (req.query.priority) {
+            match.priority = req.query.priority;
+        }
+
         if (req.query.sortBy) {
             const parts = req.query.sortBy.split(':')
             sort[parts[0]] = parts[1] === 'desc' ? -1 : 1
@@ -43,7 +48,10 @@ router.get('/', auth, async (req, res) => {
             .limit(limit)
             .skip(skip);
         
-        res.send(tasks);
+        res.send({
+            tasks: [...tasks],
+            totalCount: await Task.collection.countDocuments()
+        });
     } catch (e) {
         res.status(500).send()
     }
