@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import { Chip } from '@mui/material';
-import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import { useState, useEffect, useCallback } from 'react';
+import { Box, Chip } from '@mui/material';
+import { DataGrid, GridColDef, GridFilterModel, GridRenderCellParams, GridToolbar } from '@mui/x-data-grid';
 import { IconButton } from '@mui/material';
-import { Delete, Edit } from '@mui/icons-material';import { getTasks } from '../api';
-;
+import { Delete, Edit } from '@mui/icons-material';
+import { filterTasks, getTasks } from '../api';
 
 interface onEditData {
     title: string;
@@ -11,10 +11,15 @@ interface onEditData {
     completed?: boolean;
 }
 
-const chipColor: {[key in string]: string} = {
+const chipColor: { [key in string]: string } = {
     "HIGH": "error",
     "MEDIUM": "info",
     "LOW": "secondary"
+}
+
+const taskStatus: { [key in string]: string } = {
+    "false": "warning",
+    "true": "success"
 }
 
 // interface TaskListProps {
@@ -22,65 +27,77 @@ const chipColor: {[key in string]: string} = {
 //     onDelete: (id: number) => void;
 //     // onEdit: (id: number, data: onEditData) => void;
 // }
-const TaskList: React.FC = () => {
-    const [rows, setRows] = useState([]);
-    const [totalCount, setTotalCount] = useState(0);
-    const [limit, _] = useState(1);
-    const [skip, setSkip] = useState(0);
-    const [loading, setLoading] = useState(false);
-
+const TaskList: React.FC<{ loading: any, onFilterChange: Function, limit: any, totalCount: any, skip: any, setSkip: any, rows: any, onEdit: any, onDelete: any }> = ({ loading, skip, onFilterChange, setSkip, totalCount, limit, rows, onEdit, onDelete }: any) => {
     const columns: GridColDef[] = [
-        { field: '_id', headerName: 'ID', width: 70 },
-        { field: 'title', headerName: 'Title', width: 130 },
-        { field: 'description', headerName: 'Description', width: 130 },
+        {
+            field: '_id', headerName: 'ID', minWidth: 220, headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
+            disableColumnMenu: true,
+            align: 'center'
+        },
+        {
+            field: 'title', headerName: 'Title', minWidth: 220, headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
+            disableColumnMenu: true,
+            align: 'center'
+        },
+        {
+            field: 'description', headerName: 'Description', minWidth: 220, headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
+            disableColumnMenu: true,
+            align: 'center'
+        },
         {
             field: 'priority',
             headerName: 'Priority',
-            width: 90,
+            disableColumnMenu: true,
+            headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
             renderCell: (params: GridRenderCellParams<any, String>) => (
                 <Chip label={params.row.priority} color={chipColor[params.row.priority] as any} />
             ),
+            minWidth: 200,
+            resizable: false,
+            align: 'center'
         },
         {
             field: 'completed',
             headerName: 'Status',
+            disableColumnMenu: true,
             sortable: false,
-            width: 160,
+            headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
             renderCell: (params: GridRenderCellParams<any, String>) => (
-                <Chip label={params.row.priority} color={chipColor[params.row.priority] as any} />
+                <Chip label={params.row.completed ? "Done" : "In progress"} color={taskStatus[params.row.completed?.toString()] as any} />
             ),
+            minWidth: 200,
+            resizable: false,
+            align: 'center'
         },
         {
             field: 'actions',
             headerName: "Actions",
             sortable: false,
-            width: 160,
+            disableColumnMenu: true,
+            headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
             renderCell: (params: GridRenderCellParams<any, String>) => (
                 <>
-                    <IconButton>
-                        <Delete/>
+                    <IconButton onClick={() => onDelete(params.row)}>
+                        <Delete />
                     </IconButton>
-                    <IconButton onClick={() => {}}>
-                        <Edit/>
+                    <IconButton onClick={() => onEdit(params.row)}>
+                        <Edit />
                     </IconButton>
                 </>
-            )
+            ),
+            resizable: false,
+            minWidth: 154,
+            align: 'center'
         }
     ];
 
-    useEffect(() => {
-        async function getTasksByLimit() {
-            setLoading(true);
-            const tasks = await getTasks(limit, skip);
-            setRows(tasks?.tasks);
-            setTotalCount(tasks?.totalCount);
-            setLoading(false);
-        }
-        getTasksByLimit();
-    }, [skip]);
-
     const handlePageChange = (x: any) => {
-        console.log(x);
         if (x.page >= 1) {
             setSkip((x.page) * limit);
         }
@@ -92,23 +109,37 @@ const TaskList: React.FC = () => {
 
     return (
         <div>
-            <p>Task List</p>
-            <div>
+            <Box sx={{ 
+                width: "100%",
+                '& .super-app-theme--header': {
+                    backgroundColor: 'rgba(255, 7, 0, 0.55)',
+                    fontWeight: 'bolder'
+                },
+            }}>
                 <DataGrid
+                    slots={{ toolbar: GridToolbar }}
                     rows={rows}
                     columns={columns}
                     rowCount={totalCount}
+                    density='standard'
+                    filterMode="server"
+                    onFilterModelChange={onFilterChange}
+                    slotProps={{
+                        toolbar: {
+                            showQuickFilter: true,
+                        },
+                    }}
                     paginationMode='server'
                     initialState={{
                         pagination: {
-                            paginationModel: { page: 0, pageSize: limit },
+                            paginationModel: { pageSize: limit, page: 0 },
                         },
                     }}
                     loading={loading}
                     onPaginationModelChange={handlePageChange}
-                    pageSizeOptions={[5, 10]}
+                    pageSizeOptions={[10]}
                 />
-            </div>
+            </Box>
         </div>
     );
 }

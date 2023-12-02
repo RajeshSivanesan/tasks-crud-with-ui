@@ -12,7 +12,7 @@ const Transition = React.forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export const AddEditTaskDialog = ({ open, setOpen, task, onSubmit }: { open: boolean, setOpen: Function, task?: any, onSubmit: (title: string, description: string, priority: string) => void }) => {
+export const AddEditTaskDialog = ({ open, setOpen, task, onSubmit }: { open: boolean, setOpen: Function, task?: any, onSubmit: ({ id, title, description, priority, completed }: { id?: string, title: string, description: string, priority: string, completed?: boolean }) => void }) => {
     return (
         <Dialog
             open={open}
@@ -20,7 +20,7 @@ export const AddEditTaskDialog = ({ open, setOpen, task, onSubmit }: { open: boo
             keepMounted
             onClose={() => setOpen(false)}
         >
-            <DialogTitle>Add Task</DialogTitle>
+            <DialogTitle>{`${task ? 'Edit': 'Add'} Task`}</DialogTitle>
             <DialogContent>
                 <TaskForm task={task} onSubmit={onSubmit} />
             </DialogContent>

@@ -7,7 +7,7 @@ import cors from 'cors';
 import httpStatus from 'http-status';
 import config from './config/config';
 import morgan from './modules/logger/morgan';
-// import { authLimiter } from './modules/utils';
+import rateLimit from 'express-rate-limit';
 import { ApiError, errorConverter, errorHandler } from './modules/errors';
 import taskRoutes from './router/task';
 import userRoutes from './router/user';
@@ -33,16 +33,28 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // sanitize request data
+// Validate and sanitize the user input using the xss library
 app.use(xss());
-app.use(ExpressMongoSanitize());
+app.use(ExpressMongoSanitize({
+  allowDots: true,
+  replaceWith: '_',
+  onSanitize: ({ req, key }: any) => {
+    console.warn(`This request[${key}] is sanitized`);
+  }
+}));
 
 // gzip compression
 app.use(compression());
 
-// // limit repeated failed requests to auth endpoints
-// if (config.env === 'production') {
-//   app.use('/v1/auth', authLimiter);
-// }
+// Set up rate limiting using the express-rate-limit middleware
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later'
+});
+
+// Apply rate limiting to all routes
+app.use(limiter);
 
 // api routes
 app.use("/tasks", taskRoutes);

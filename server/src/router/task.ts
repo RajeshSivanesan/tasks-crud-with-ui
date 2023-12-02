@@ -5,9 +5,9 @@ import auth from '../middlewares/auth'
 const router = express.Router()
 
 router.post('/', auth, async (req, res) => {
+    console.log(req.body, "req.body");
     const task = new Task({
-        ...req.body,
-        owner: req.user._id
+        ...req.body
     })
 
     try {
@@ -22,6 +22,7 @@ router.post('/', auth, async (req, res) => {
 // GET /tasks?priority=HIGH
 // GET /tasks?limit=10&skip=20
 // GET /tasks?sortBy=createdAt:desc
+// GET /tasks?search=aaa
 router.get('/', auth, async (req, res) => {
     try {
         const match = {}
@@ -33,6 +34,11 @@ router.get('/', auth, async (req, res) => {
             match.completed = req.query.completed === 'true'
         }
 
+        if (req.query.search) {
+            match.title = { $regex: new RegExp(req.query.search), $options: 'si' }
+            match.description = { $regex: new RegExp(req.query.search), $options: 'si' }
+        }
+
         if (req.query.priority) {
             match.priority = req.query.priority;
         }
@@ -42,6 +48,9 @@ router.get('/', auth, async (req, res) => {
             sort[parts[0]] = parts[1] === 'desc' ? -1 : 1
         }
 
+        console.log(match);
+        console.log(limit);
+
         const tasks = await Task
             .find(match)
             .sort(sort)
@@ -50,7 +59,7 @@ router.get('/', auth, async (req, res) => {
         
         res.send({
             tasks: [...tasks],
-            totalCount: await Task.collection.countDocuments()
+            totalCount: Object.keys(match).length > 0 ? tasks?.length : await Task.collection.countDocuments()
         });
     } catch (e) {
         res.status(500).send()
@@ -74,24 +83,12 @@ router.get('/:id', auth, async (req, res) => {
 })
 
 router.patch('/:id', auth, async (req, res) => {
-    const updates = Object.keys(req.body)
-    const allowdUpdates = ['description', 'completed']
-    const isValidOperation = updates.every(update => allowdUpdates.includes(update))
-
-    if (!isValidOperation) {
-        return res.status(400).send()
-    }
-
     try {
-        const task = await Task.findOne({ _id: req.params.id })
+        const task = await Task.findOneAndUpdate({ _id: req.params.id }, {
+            ...req.body
+        }, { new: true });
 
-        if (!task) {
-            return res.status(404).send()
-        }
-
-        updates.forEach(update => task[update] = req.body[update])
-        await task.save()
-        res.send(task)
+        res.status(204).send({ completed: true });
     } catch (e) {
         res.status(400).send(e)
     }

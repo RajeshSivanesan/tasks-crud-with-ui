@@ -6,7 +6,6 @@ function App() {
   return (
     <>
       <ProvideAuth>
-        <h1>Task Manager</h1>
         <HomePage />
       </ProvideAuth>
     </>

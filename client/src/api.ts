@@ -1,6 +1,6 @@
 const BASE_URL = 'http://localhost:3000';
 const LOGIN_API = '/users/login';
-const SIGNUP_API = "/users";
+const USERS_API = "/users";
 const TASKS_API = "/tasks";
 
 const getSession = () => {
@@ -17,7 +17,7 @@ const setSessionInLocalStorage = (token: string) => {
 };
 
 export const postSignup = (user: any) => {
-    return fetch(`${BASE_URL}${SIGNUP_API}`, {
+    return fetch(`${BASE_URL}${USERS_API}`, {
         method: "POST",
         body: JSON.stringify(user),
         headers: {
@@ -51,11 +51,10 @@ export const postLogin = (user: any) => {
         });
 }
 
-export const postCreateTask = (task: any) => {
+export const postLogout = () => {
     const { token } = getSession()
-    return fetch(`${BASE_URL}${TASKS_API}`, {
+    return fetch(`${BASE_URL}${USERS_API}/logout`, {
         method: "POST",
-        body: JSON.stringify(task),
         headers: {
             "Authorization": `Bearer ${token}`
         }
@@ -63,6 +62,27 @@ export const postCreateTask = (task: any) => {
         .then((respose) => respose.json())
         .then((response) => {
             console.log(response);
+            return response;
+        })
+        .catch(err => {
+            throw err;
+        });
+}
+
+export const postCreateTask = (task: any) => {
+    const { token } = getSession()
+    return fetch(`${BASE_URL}${TASKS_API}`, {
+        method: "POST",
+        body: JSON.stringify(task),
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
+        .then((respose) => respose.json())
+        .then((response) => {
+            console.log(response);
+            return response;
         })
         .catch(err => {
             throw err;
@@ -95,17 +115,17 @@ export const getTasks = (limit: number, skip: number) => {
         });
 }
 
-export const filterTasks = (status: boolean, priority: string, search: string) => {
+export const filterTasks = (status: string, priority: string, search: string) => {
     const { token } = getSession();
     let url = `${BASE_URL}${TASKS_API}`;
-    if (typeof status !== 'undefined') {
-        url = `${url}?completed=${status}`;
+    if (status) {
+        url = `${url}${url.includes("?") ? "": "?"}completed=${status}`;
     }
-    if (typeof priority !== 'undefined') {
-        url = `${url}?priority=${priority}`;
+    if (priority) {
+        url = `${url}${url.includes("?") ? "": "?"}priority=${priority}`;
     }
-    if (typeof search !== 'undefined') {
-        url = `${url}?search=${search}`; // search by title or description
+    if (search) {
+        url = `${url}${url.includes("?") ? "": "?"}search=${search}`; // search by title or description
     }
 
     return fetch(url, {
@@ -117,6 +137,16 @@ export const filterTasks = (status: boolean, priority: string, search: string) =
         .then((respose) => respose.json())
         .then((response) => {
             console.log(response);
+            const tasks = response?.tasks?.map((r: any) => {
+                return {
+                    ...r,
+                    id: r._id
+                }
+            });
+            return {
+                tasks: tasks,
+                totalCount: tasks?.length
+            }
         })
         .catch(err => {
             throw err;
@@ -128,12 +158,15 @@ export const updateTask = (taskId: string, body: any) => {
     return fetch(`${BASE_URL}${TASKS_API}/${taskId}`, {
         method: "PATCH",
         headers: {
-            "Authorization": `Bearer ${token}`
-        }
+            "Authorization": `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body),
     })
         .then((respose) => respose.json())
         .then((response) => {
             console.log(response);
+            return response;
         })
         .catch(err => {
             throw err;

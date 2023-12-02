@@ -24,8 +24,6 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
 }
 
 h1 {
@@ -68,4 +66,19 @@ button:focus-visible {
 
 .MuiInputBase-root {
   margin-bottom: 10px;
+}
+
+.MuiDataGrid-row:nth-child(even){
+  background-color: aliceblue;
+}
+
+.tasksDiv {
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+@media screen and (min-width: 100px) {
+  .tasksDiv {
+    margin: unset;
+  }
 }
