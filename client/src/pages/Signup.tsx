@@ -9,7 +9,6 @@ const RegisterForm = () => {
   const [email, setEmail] = useState('');
   const [age, setAge] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { setAuth } = useAuth() as any;
@@ -24,7 +23,7 @@ const RegisterForm = () => {
         age
       });
       if (response?.errors) {
-        setError(response?.message);
+        setError(response?.message ?? 'Failed to create account, please retry!');
       } else {
         setAuth(response);
         navigate('/tasks');
@@ -99,17 +98,6 @@ const RegisterForm = () => {
                 sx={{ mb: 4 }}
               />
               <TextField
-                type="password"
-                variant='outlined'
-                color='secondary'
-                label="Confirm Password"
-                onChange={e => setConfirmPassword(e.target.value)}
-                value={confirmPassword}
-                required
-                fullWidth
-                sx={{ mb: 4 }}
-              />
-              <TextField
                 type="number"
                 variant='outlined'
                 color='secondary'
@@ -120,6 +108,7 @@ const RegisterForm = () => {
                 required
                 sx={{ mb: 4 }}
               />
+              {error && <p style={{ color: 'red' }}>{error}</p>}
               <Button variant="outlined" color="secondary" type="submit">Register</Button>
             </form>
             <small>Already have an account? <Link to="/">Login Here</Link></small>

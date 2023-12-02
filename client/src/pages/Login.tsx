@@ -16,6 +16,7 @@ const Login = () => {
     const handleSubmit = async (event: any) => {
         event.preventDefault()
 
+        setError("");
         setEmailError(false)
         setPasswordError(false)
 
@@ -34,7 +35,7 @@ const Login = () => {
                     password,
                 });
                 if (response?.errors)    {
-                    setError(response?.message);
+                    setError(response?.message ?? 'Login Failed, please check your username and password and try again');
                 } else {
                     setAuth(response);
                     navigate('/tasks');
@@ -73,6 +74,7 @@ const Login = () => {
                     fullWidth
                     sx={{ mb: 3 }}
                 />
+                {error && <p style={{ color: 'red' }}>{error}</p>}
                 <Button variant="outlined" color="secondary" type="submit">Login</Button>
 
             </form>

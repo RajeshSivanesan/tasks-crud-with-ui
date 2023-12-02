@@ -38,7 +38,7 @@ app.use(xss());
 app.use(ExpressMongoSanitize({
   allowDots: true,
   replaceWith: '_',
-  onSanitize: ({ req, key }: any) => {
+  onSanitize: ({ key }: any) => {
     console.warn(`This request[${key}] is sanitized`);
   }
 }));

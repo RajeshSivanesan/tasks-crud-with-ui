@@ -6,6 +6,7 @@ import { deleteTask, filterTasks, getTasks, postCreateTask, updateTask } from '.
 import AlertDialog from '../components/common/AlertDialog';
 import { GridFilterModel } from '@mui/x-data-grid';
 import { Button, Stack } from '@mui/material';
+import { debounce } from '../util';
 
 const LIMIT = 10;
 
@@ -93,17 +94,23 @@ const Tasks: React.FC = () => {
         }
     }
 
-    const onFilterChange = useCallback(async (filterModel: GridFilterModel) => {
+    const onFilterChange = async (filterModel: GridFilterModel) => {
         // Here you save the data you need from the filter model
-        console.log(filterModel)
-        const { quickFilterValues = [] } = filterModel;
-        if (quickFilterValues.length > 0) {
+        const { quickFilterValues = [], items } = filterModel;
+        if (items.length) {
+            const { field, value } = items[0];
+            const priorityValue = field === 'priority' && value;
+            const statusValue = field === 'completed' && value;
+            const result = await filterTasks(statusValue, priorityValue, "");
+            setRows(result?.tasks);
+            setTotalCount(result?.totalCount);
+        } else {
             // search
             const result = await filterTasks("", "", quickFilterValues[0]);
             setRows(result?.tasks);
             setTotalCount(result?.totalCount);
         }
-      }, []);
+      };
 
     return (
         <div className='tasksDiv'>
@@ -114,7 +121,7 @@ const Tasks: React.FC = () => {
                 rows={rows}
                 limit={LIMIT}
                 skip={skip}
-                onFilterChange={onFilterChange}
+                onFilterChange={debounce(onFilterChange, 1000)}
                 setSkip={setSkip}
                 loading={loading}
                 totalCount={totalCount}

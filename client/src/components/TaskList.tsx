@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Box, Chip } from '@mui/material';
-import { DataGrid, GridColDef, GridFilterModel, GridRenderCellParams, GridToolbar } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridFeatureMode, GridFilterModel, GridRenderCellParams, GridToolbar } from '@mui/x-data-grid';
 import { IconButton } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import { filterTasks, getTasks } from '../api';
@@ -96,10 +96,25 @@ const TaskList: React.FC<{ loading: any, onFilterChange: Function, limit: any, t
             align: 'center'
         }
     ];
+    const [filterMode, setFilterMode] = useState<GridFeatureMode>('server');
 
     const handlePageChange = (x: any) => {
-        if (x.page >= 1) {
-            setSkip((x.page) * limit);
+        setSkip((x.page) * limit);
+    }
+
+    const handleFilterChange = (filterModel: GridFilterModel) => {
+        const { items } = filterModel;
+        if (items.length > 0) {
+            const { field } = items[0];
+            if (!['completed', 'priority'].includes(field)) {
+                setFilterMode('client');
+            } else {
+                setFilterMode('server');
+                onFilterChange(filterModel);
+            }
+        } else {
+            setFilterMode('server');
+            onFilterChange(filterModel);
         }
     }
 
@@ -112,18 +127,21 @@ const TaskList: React.FC<{ loading: any, onFilterChange: Function, limit: any, t
             <Box sx={{ 
                 width: "100%",
                 '& .super-app-theme--header': {
-                    backgroundColor: 'rgba(255, 7, 0, 0.55)',
-                    fontWeight: 'bolder'
+                    fontWeight: 'bolder',
+                    textTransform: 'uppercase'
                 },
             }}>
                 <DataGrid
                     slots={{ toolbar: GridToolbar }}
                     rows={rows}
+                    disableColumnSelector
+                    disableDensitySelector
+                    disableRowSelectionOnClick
                     columns={columns}
                     rowCount={totalCount}
                     density='standard'
-                    filterMode="server"
-                    onFilterModelChange={onFilterChange}
+                    filterMode={filterMode}
+                    onFilterModelChange={handleFilterChange}
                     slotProps={{
                         toolbar: {
                             showQuickFilter: true,
@@ -133,7 +151,7 @@ const TaskList: React.FC<{ loading: any, onFilterChange: Function, limit: any, t
                     initialState={{
                         pagination: {
                             paginationModel: { pageSize: limit, page: 0 },
-                        },
+                        }
                     }}
                     loading={loading}
                     onPaginationModelChange={handlePageChange}
