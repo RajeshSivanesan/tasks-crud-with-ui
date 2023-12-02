@@ -20,7 +20,7 @@ export const AddEditTaskDialog = ({ open, setOpen, task, onSubmit }: { open: boo
             keepMounted
             onClose={() => setOpen(false)}
         >
-            <DialogTitle>{`${task ? 'Edit': 'Add'} Task`}</DialogTitle>
+            <DialogTitle>{`${Object.keys(task).length ? 'Edit': 'Add'} Task`}</DialogTitle>
             <DialogContent>
                 <TaskForm task={task} onSubmit={onSubmit} />
             </DialogContent>

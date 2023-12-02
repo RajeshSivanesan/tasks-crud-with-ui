@@ -8,6 +8,7 @@
     -- text search (realtime)
     -- local search on ID, title, description
     -- priority and status (realtime)
+7. Responsive UI
 
 <hr />
 
@@ -19,18 +20,28 @@
  - Mongo db
  - Express
  - jest / React testing library
-
-### Demo Github Pages hosted URL
-
  
 ### Screenshots
+![Alt text](image.png)
 
+![Alt text](image-1.png)
+
+![Alt text](image-2.png)
+
+![Alt text](image-3.png)
+
+![Alt text](image-4.png)
+
+![Alt text](image-5.png)
+
+![Alt text](image-6.png)
 
 ## Bonus Features:
 1. Implemented client search functionality for other fields
 2. Test cases (FE, BE) - 50% coverage
 3. Debouncing the text search by 1s, to avoid frequent api calls
 4. Logout functionality
+5. Export as CSV / Print Preview
 
 ### Running the app locally
 
