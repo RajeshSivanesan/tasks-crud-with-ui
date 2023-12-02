@@ -8,9 +8,9 @@ function Copyright(props: any) {
     return (
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
             {'Copyright © '}
-            <Link color="inherit" href="https://mui.com/">
-                Your Website
-            </Link>{' '}
+            <a target="_blank" href="https://linkedin.com/in/rajesh-sivanesan-b858ab66/">
+                LinkedIn
+            </a>{' '}
             {new Date().getFullYear()}
             {'.'}
         </Typography>
