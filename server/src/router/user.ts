@@ -1,7 +1,5 @@
 //@ts-nocheck
 import express from 'express'
-// const multer = require('multer')
-// const sharp = require('sharp')
 import User from '../models/user'
 import auth from '../middlewares/auth'
 const router = express.Router()
