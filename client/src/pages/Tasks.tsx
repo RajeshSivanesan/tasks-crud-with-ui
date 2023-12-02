@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import TaskList from '../components/TaskList';
-import { AddTask } from '../components/AddTask';
+import { AddTaskButton } from '../components/AddTaskButton';
 import { AddEditTaskDialog } from '../components/AddEditTaskDialog';
 import { deleteTask, filterTasks, getTasks, postCreateTask, updateTask } from '../api';
 import AlertDialog from '../components/common/AlertDialog';
 import { GridFilterModel } from '@mui/x-data-grid';
-import { Button, Stack } from '@mui/material';
 import { debounce } from '../util';
 
 const LIMIT = 10;
@@ -126,7 +125,7 @@ const Tasks: React.FC = () => {
                 loading={loading}
                 totalCount={totalCount}
             />
-            <AddTask onAdd={onAddTask} />
+            <AddTaskButton onAdd={onAddTask} />
             {openAddTaskDialog && (
                 <AddEditTaskDialog
                     open={openAddTaskDialog}

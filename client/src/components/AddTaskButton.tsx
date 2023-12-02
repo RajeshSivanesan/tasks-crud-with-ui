@@ -15,7 +15,7 @@ const fab = {
     label: 'Add',
 }
 
-export const AddTask: React.FC<{onAdd: Function}> = ({ onAdd }) => {
+export const AddTaskButton: React.FC<{onAdd: Function}> = ({ onAdd }) => {
     return (
         <Fab onClick={() => onAdd()} sx={fab.sx} aria-label={fab.label} color={fab.color}>
             {fab.icon}

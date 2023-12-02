@@ -11,11 +11,6 @@ const getSession = () => {
     }
 };
 
-const setSessionInLocalStorage = (token: string) => {
-    localStorage.setItem('session', JSON.stringify(token))
-    return true
-};
-
 export const postSignup = (user: any) => {
     return fetch(`${BASE_URL}${USERS_API}`, {
         method: "POST",

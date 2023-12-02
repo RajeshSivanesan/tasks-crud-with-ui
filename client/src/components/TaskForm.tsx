@@ -45,7 +45,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, task }) => {
                 <InputLabel id="task-priority">Priority</InputLabel>
                 <Select
                     labelId="task-priority"
-                    value={priority}
+                    value={priority ?? 'LOW'}
                     label="Priority"
                     onChange={handleChange}
                     disabled={completed}
@@ -65,6 +65,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, task }) => {
                         value={completed?.toString()}
                     >
                         <MenuItem value={"true"}>Mark as done</MenuItem>
+                        <MenuItem value={"false"}>In Progress</MenuItem>
                     </Select>
                 </FormControl>
             )}

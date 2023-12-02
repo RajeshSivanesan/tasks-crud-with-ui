@@ -1,15 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { Box, Chip } from '@mui/material';
 import { DataGrid, GridColDef, GridFeatureMode, GridFilterModel, GridRenderCellParams, GridToolbar } from '@mui/x-data-grid';
 import { IconButton } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
-import { filterTasks, getTasks } from '../api';
-
-interface onEditData {
-    title: string;
-    description: string;
-    completed?: boolean;
-}
 
 const chipColor: { [key in string]: string } = {
     "HIGH": "error",
@@ -27,7 +20,7 @@ const taskStatus: { [key in string]: string } = {
 //     onDelete: (id: number) => void;
 //     // onEdit: (id: number, data: onEditData) => void;
 // }
-const TaskList: React.FC<{ loading: any, onFilterChange: Function, limit: any, totalCount: any, skip: any, setSkip: any, rows: any, onEdit: any, onDelete: any }> = ({ loading, skip, onFilterChange, setSkip, totalCount, limit, rows, onEdit, onDelete }: any) => {
+const TaskList: React.FC<{ loading: any, onFilterChange: Function, limit: any, totalCount: any, skip: any, setSkip: any, rows: any, onEdit: any, onDelete: any }> = ({ loading, onFilterChange, setSkip, totalCount, limit, rows, onEdit, onDelete }: any) => {
     const columns: GridColDef[] = [
         {
             field: '_id', headerName: 'ID', minWidth: 220, headerClassName: 'super-app-theme--header',
