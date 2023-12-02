@@ -38,7 +38,7 @@
 
 ## Bonus Features:
 1. Implemented client search functionality for other fields
-2. Test cases (FE, BE) - 50% coverage
+2. Test cases (FE) - 45% coverage
 3. Debouncing the text search by 1s, to avoid frequent api calls
 4. Logout functionality
 5. Export as CSV / Print Preview
