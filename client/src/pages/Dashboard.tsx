@@ -7,8 +7,7 @@ const Dashboard: React.FC = () => {
     const { setAuth } = useAuth() as any;
     const onLogout = async () => {
         try {
-            const result = await postLogout();
-            console.log(result);
+            await postLogout();
         } catch(ex) {
             console.log(ex)
         } finally {

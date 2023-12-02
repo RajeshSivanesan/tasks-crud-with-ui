@@ -38,7 +38,6 @@ export const postLogin = (user: any) => {
     })
         .then((respose) => respose.json())
         .then((response) => {
-            console.log(response);
             return response;
         })
         .catch(err => {
@@ -56,7 +55,6 @@ export const postLogout = () => {
     })
         .then((respose) => respose.json())
         .then((response) => {
-            console.log(response);
             return response;
         })
         .catch(err => {
@@ -76,7 +74,6 @@ export const postCreateTask = (task: any) => {
     })
         .then((respose) => respose.json())
         .then((response) => {
-            console.log(response);
             return response;
         })
         .catch(err => {
@@ -131,7 +128,6 @@ export const filterTasks = (status: string, priority: string, search: string) =>
     })
         .then((respose) => respose.json())
         .then((response) => {
-            console.log(response);
             const tasks = response?.tasks?.map((r: any) => {
                 return {
                     ...r,
@@ -160,7 +156,6 @@ export const updateTask = (taskId: string, body: any) => {
     })
         .then((respose) => respose.json())
         .then((response) => {
-            console.log(response);
             return response;
         })
         .catch(err => {
@@ -178,7 +173,7 @@ export const deleteTask = (taskId: string) => {
     })
         .then((respose) => respose.json())
         .then((response) => {
-            console.log(response);
+            return response;
         })
         .catch(err => {
             throw err;

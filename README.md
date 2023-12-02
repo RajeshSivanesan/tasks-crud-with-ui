@@ -97,7 +97,7 @@ To run the tests:
 
 To install dependencies:
 ```shell
-  npm install
+  npm install --force
 ```
 
 To run the app:

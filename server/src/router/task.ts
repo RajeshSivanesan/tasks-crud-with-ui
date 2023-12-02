@@ -5,7 +5,6 @@ import auth from '../middlewares/auth'
 const router = express.Router()
 
 router.post('/', auth, async (req, res) => {
-    console.log(req.body, "req.body");
     const task = new Task({
         ...req.body
     })
@@ -40,16 +39,13 @@ router.get('/', auth, async (req, res) => {
         }
 
         if (req.query.priority) {
-            match.priority = req.query.priority;
+            match.priority = { $regex: new RegExp(req.query.priority), $options: 'si' };
         }
 
         if (req.query.sortBy) {
             const parts = req.query.sortBy.split(':')
             sort[parts[0]] = parts[1] === 'desc' ? -1 : 1
         }
-
-        console.log(match);
-        console.log(limit);
 
         const tasks = await Task
             .find(match)

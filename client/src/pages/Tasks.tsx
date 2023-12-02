@@ -46,8 +46,7 @@ const Tasks: React.FC = () => {
 
     const onDeleteYesConfirm = async () => {
         try {
-            const result = await deleteTask((selectedTask as any)?.id);
-            console.log(result);
+            await deleteTask((selectedTask as any)?.id);
         } catch (ex) {
             console.log(ex);
         } finally {
@@ -61,13 +60,12 @@ const Tasks: React.FC = () => {
         if (id) {
             // edit Mode
             try {
-                const result = await updateTask(id, {
+                await updateTask(id, {
                     title,
                     description,
                     priority,
                     completed
                 });
-                console.log(result);
             } catch (ex) {
                 console.log(ex);
             } finally {
@@ -77,13 +75,12 @@ const Tasks: React.FC = () => {
         } else {
             // create mode
             try {
-                const result = await postCreateTask({
+                await postCreateTask({
                     title,
                     description,
                     priority,
                     completed: false
                 });
-                console.log(result);
             } catch (ex) {
                 console.log(ex);
             } finally {
