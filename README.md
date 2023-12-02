@@ -87,7 +87,7 @@ To launch the ui:
 
 To run the tests:
 ```shell
-  npm run test
+  npm run test:coverage
 ```
 
 ### To run BE
@@ -104,9 +104,4 @@ To run the app:
 ```shell
   npm run compile
   npm run pre:dev
-```
-
-To run the tests:
-```shell
-  npm run test
 ```
